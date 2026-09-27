@@ -6,6 +6,12 @@ An interactive, local-first demo workspace for learning and defending the AI/ML 
 
 Open `index.html` directly in Chrome. No Python server, API, or package install is needed. Google Fonts is optional; system font fallbacks work offline. Live-looking metrics and simulator outcomes are illustrative, not telemetry.
 
+## Dashboard preview
+
+![Fieldnote AI Systems Studio dashboard showing the Kafka inference simulator, drift policy, model release ledger, and operator navigation](docs/fieldnote-dashboard.png)
+
+Captured from the local interactive demo. Values shown are illustrative simulation state.
+
 ## Demo areas
 
 - **Model lifecycle:** MLflow-style registry stages (`Staging → Production → Archived`), promote gates, compare versions, and rollback.
