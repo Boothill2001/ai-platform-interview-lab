@@ -12,6 +12,21 @@ On Windows, double-click `start.bat`. It starts a local Python server and opens 
 
 Captured from eight screens of the local interactive demo. Open the image at full size to inspect each screen. Values shown are illustrative simulation state, not production telemetry.
 
+### Read each screen clearly
+
+The overview above is a quick tour. Open any full-size screenshot below to read the dashboard details; the first two tour frames are separate sections within Platform overview.
+
+| Dashboard screen | Full-size capture |
+| --- | --- |
+| Platform overview · executive pulse and model release | [Open screenshot](docs/screens/01-platform-overview.png) |
+| Live inference · event flow, load and capacity | [Open screenshot](docs/screens/02-live-inference.png) |
+| Data foundation · ETL, quality gates and features | [Open screenshot](docs/screens/03-data-foundation.png) |
+| Cloud architecture · services and migration map | [Open screenshot](docs/screens/04-cloud-architecture.png) |
+| Customer studio · discovery and solution brief | [Open screenshot](docs/screens/05-customer-studio.png) |
+| Team & delivery · ownership and execution | [Open screenshot](docs/screens/06-team-delivery.png) |
+
+GitHub scales screenshots to fit the page. Click **Open screenshot** to view each capture at its original 1894 × 1244 resolution. The 8-frame tour splits Platform overview into its executive pulse and lower platform-control panels; both are visible in the full-size overview capture.
+
 ## Demo areas
 
 - **Model lifecycle:** MLflow-style registry stages (`Staging → Production → Archived`), promote gates, compare versions, and rollback.
