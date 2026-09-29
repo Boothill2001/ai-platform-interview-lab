@@ -8,7 +8,7 @@ Open `index.html` directly in Chrome. No Python server, API, or package install 
 
 ## Dashboard preview
 
-![Fieldnote AI Systems Studio dashboard showing the Kafka inference simulator, drift policy, model release ledger, and operator navigation](docs/fieldnote-dashboard.png)
+![Fieldnote AI Systems Studio platform overview with KPI cards, model registry, canary release gate, and operator guidance](docs/fieldnote-dashboard.png)
 
 Captured from the local interactive demo. Values shown are illustrative simulation state.
 

@@ -1,0 +1,142 @@
+TOP 30 CÂU HỎI TỰ LUẬN — ĐỌC HIỂU DASHBOARD FIELDNOTE TỪ A ĐẾN Z
+====================================================================
+
+Mục tiêu: trả lời được bộ câu này bằng lời của bạn để hiểu từng khu vực, chỉ số, nút tương tác và quyết định kỹ thuật trong dashboard Fieldnote / AI Systems Studio.
+
+Đây KHÔNG phải bộ câu hỏi nhập môn AI/MLE chung chung. Mỗi câu bám trực tiếp vào dashboard và project được mô phỏng ở đây.
+
+CÁCH LÀM
+--------
+1. Mở dashboard local, đi đúng trang/panel ghi trong câu hỏi, tương tác với các nút/slider nếu có.
+2. Trả lời từng câu theo số thứ tự, bằng lời của bạn. Có thể trả lời 1 câu mỗi lượt; nếu muốn thì gửi 2–3 câu.
+3. Gửi câu trả lời vào cuộc trò chuyện này. Mình sẽ chấm 0–4, chỉ rõ ý đúng/sai/thiếu, giải thích gắn với chính panel đó, hỏi tiếp một câu probe và chỉ chuyển khi bạn đã hiểu.
+4. Câu hỏi có số liệu demo: hãy giải thích số đó nói gì VÀ không chứng minh được gì. Không cần bịa rằng số mô phỏng là telemetry production.
+
+Thang chấm: 0 = chưa nắm; 1 = kể tên nút/công nghệ; 2 = hiểu ý chính nhưng thiếu liên kết; 3 = giải thích đúng quyết định và hệ quả; 4 = thêm bằng chứng đo lường, failure mode, giới hạn và trade-off.
+
+TOP 30 — ĐI THEO ĐÚNG CẤU TRÚC DASHBOARD
+=========================================
+
+PHẦN 1 — PLATFORM OVERVIEW: ĐỌC TỔNG QUAN VÀ RA QUYẾT ĐỊNH
+----------------------------------------------------------
+
+01. Ở trang Platform overview, dashboard gom các tín hiệu nào thành một bức tranh AI platform? Hãy giải thích đường liên kết giữa throughput, ETL volume, churn AUC, canary allocation, registry, drift và release ledger. CEO, platform owner và người vận hành mỗi người dùng phần nào để quyết định?
+    Khi trả lời, đừng chỉ đọc tên KPI: nói mỗi tín hiệu cho biết điều gì và có giới hạn gì.
+
+02. Banner “SIMULATED PROOF” cảnh báo 9k msg/s, 50M+ rows, AUC 0.87 và 94% detection là claim được cung cấp, không phải telemetry xác minh. Nếu interviewer hỏi “bằng chứng đâu?”, bạn sẽ xác minh từng con số bằng dữ liệu, phép đo và phạm vi hệ thống nào?
+    Nêu rõ phân biệt: việc cá nhân làm, việc team làm, thiết kế migration và simulation.
+
+03. Trong MLflow-style model registry, đọc từng dòng churn-xgb v12 Production, v13 Staging, intent-bert Production, fraud-iforest Archived. “Stage” có nghĩa gì? Vì sao có serving alias? Thông tin nào cần kiểm tra trước khi tin metric ghi ở cột Evidence?
+    Hãy liên hệ version, artifact, lineage, cohort/metric, owner và khả năng khôi phục.
+
+04. Thử giải thích hai thao tác Promote challenger và Rollback. Điều gì phải đúng trước khi promote v13? Khi rollback thì alias, trạng thái phiên bản đang chạy và audit trail phải thay đổi ra sao?
+    Không xem nút bấm thành policy hoàn chỉnh: nói thêm approval, compatibility, evidence và điều kiện chặn.
+
+05. Canary release gate cho phép đổi Traffic exposure và chạy “Simulate 1,000 requests”. Hãy giải thích canary là gì, cần so sánh model nào với model nào, và vì sao 10% traffic chưa tự nó chứng minh model tốt hơn.
+    Nêu cohort, sample/time, latency, error rate, prediction parity, business outcome và giới hạn thống kê.
+
+06. Tương tác slider canary lên mức cao rồi chạy mô phỏng. Dựa vào p95 latency, error rate, parity và badge, bạn sẽ quyết định tiếp tục, dừng hay rollback theo luật nào? Ai là người chịu trách nhiệm thực hiện quyết định đó?
+    Hãy phân biệt tín hiệu cảnh báo, ngưỡng guardrail và quyết định release.
+
+07. Release & operations ledger lưu PROMOTE/ROLLBACK, model/object, evidence và owner để giải quyết vấn đề gì? Hãy mô tả một audit entry tốt cần có thêm những gì để điều tra được một quyết định release sau vài tuần.
+    Gợi ý: timestamp, actor, artifact digest, code/data version, policy result, links tới metrics và lý do.
+
+PHẦN 2 — LIVE INFERENCE: KAFKA, TẢI, LỖI VÀ DRIFT
+---------------------------------------------------
+
+08. Vào Live inference, đi theo Event path inspector: Producer → Kafka → Consumer → FastAPI → Redis → PostgreSQL → Prometheus. Chọn từng node và giải thích trách nhiệm, dữ liệu vào/ra và một failure mode của nó.
+    Sau đó kể một event cụ thể từ lúc phát sinh đến lúc có prediction và monitoring.
+
+09. Kafka topic, partition, key, offset và consumer group liên hệ với nhau thế nào trong luồng này? Nếu key chọn không tốt hoặc partition quá ít, thứ tự, throughput và lag có thể bị ảnh hưởng ra sao?
+    Dashboard hiển thị 9.000 msg/s: hãy nói cần benchmark topology nào chứ không coi con số là thuộc tính mặc định của Kafka.
+
+10. Ở Load and capacity, kéo Input lên cao hơn Capacity, rồi bấm Stop one consumer. Hãy giải thích trạng thái backpressure/consumer lag có thể xuất hiện thế nào, hệ thống cần alert gì và người vận hành nên làm gì trước khi backlog gây hậu quả.
+    Nêu sự khác nhau giữa tăng ingress, tăng consumer capacity, pause consumers và làm mất event.
+
+11. Bấm Replay duplicate event. Tại sao retry/replay có thể chạy lại side effect dù Kafka quản lý offset? `event_id`/idempotency key bảo vệ điều gì, và ranh giới nào vẫn chưa bảo đảm “exactly once”?
+    Mô tả một tình huống crash giữa lúc ghi database và commit offset.
+
+12. Bấm Pause consumers rồi Resume. Điều gì xảy ra với event trong thời gian consumer dừng? Bạn cần theo dõi lag, retention, retry, poison message và phục hồi ra sao để resume an toàn?
+    Nói rõ khác nhau giữa tạm dừng xử lý, mất kết nối broker và dữ liệu hết retention.
+
+13. Panel Kafka → Pub/Sub design review gợi ý ordering, redelivery, ack deadline, retention/replay, quota, IAM và subscriber semantics. Phần nào của Kafka không được giả định là giống Pub/Sub? Bạn sẽ thiết kế migration và benchmark lại như thế nào?
+    Gợi ý: adapter/contract, key-ordering, ack/retry, replay, dual-run, reconciliation, IAM và tải đại diện.
+
+14. Bấm Inject drift ở overview/live inference, rồi mở Drift & retrain decision. PSI chuyển từ 0.08 sang ngưỡng 0.20/0.27 có ý nghĩa gì? Drift có đồng nghĩa model sai hoặc phải train lại ngay không?
+    Phân biệt feature/data drift, model performance drift và label/concept drift; nói thêm segment và label delay.
+
+15. Sau khi Inject drift, bấm Evaluate policy. Vì sao kết quả đúng có thể là “điều tra trước, chưa retrain”? Hãy nêu chuỗi kiểm tra từ nguồn dữ liệu, segment, label quality đến phê duyệt và evaluation của challenger.
+    Trình bày PSI > 0.2 như một heuristic cảnh báo, không phải nút bấm tự động tạo model an toàn.
+
+PHẦN 3 — DATA FOUNDATION: ETL, QUALITY, SQL VÀ LINEAGE
+-------------------------------------------------------
+
+16. Ở ETL quality gates, có sáu checkbox: required columns, unique business key, freshness, null rate, valid categories và referential integrity. Mỗi gate bắt lỗi gì? Gate nào nên chặn publish, gate nào có thể quarantine một phần bản ghi?
+    Hãy chọn ví dụ lỗi cụ thể và nói ai cần nhận cảnh báo.
+
+17. Bấm Inject 0.8% invalid rows rồi Re-run ETL. Accepted/quarantined và pipeline outcome nên được hiểu thế nào? Nếu quality gate bị tắt nhưng dữ liệu vẫn publish, downstream training/inference có thể hỏng ra sao?
+    Nêu vì sao tổng số accepted + quarantined phải reconcile với input.
+
+18. Trong BigQuery-ready SQL sketch, chọn lần lượt Churn activity, Rolling sales và Device z-score. Mỗi truy vấn đang tạo loại feature nào? Giải thích vai trò CTE, window, PARTITION BY, ORDER BY và việc cửa sổ dữ liệu phải kết thúc trước thời điểm prediction.
+    Chỉ ra leakage có thể xảy ra nếu lấy cả hàng hiện tại/tương lai hoặc chia train/test ngẫu nhiên theo thời gian.
+
+19. Đi qua Data lineage inspector: Source → Bronze → Clean → Features → Warehouse → Train set. Mỗi tầng nên giữ hợp đồng, metadata và khả năng truy vết gì? Vì sao raw immutable, event time và schema version hữu ích khi replay/backfill?
+    Kết nối lineage với câu hỏi “model này đã học từ data nào và lúc đó biết được những gì?”.
+
+20. Dashboard ghi 50.2M input, 49.8M accepted, 0.4M quarantined. Trước khi gọi đây là ETL tốt, bạn cần biết một row có grain gì, khóa nào unique, dữ liệu đến trễ ra sao, partition/skew/shuffle xử lý thế nào và job được đo chi phí/tốc độ bằng gì?
+    Đây là câu hỏi bảo vệ claim PySpark 50M+, không phải đoán theo số dòng trên UI.
+
+PHẦN 4 — CLOUD ARCHITECTURE: MAP KHÔNG ĐỒNG NGHĨA ĐÃ MIGRATE
+--------------------------------------------------------------
+
+21. Ở Cloud architecture, đổi mode Current stack → GCP target → Migration gaps rồi chọn từng node. Hãy map Kafka, PySpark/SQL, MLflow pipeline/registry, artifacts, serving và monitoring sang target service; với mỗi cặp hãy kể ít nhất một khác biệt semantics/cấu hình cần xác minh.
+    Đừng trả lời chỉ bằng cách ghép tên dịch vụ.
+
+22. Cloud Run và GKE đều có thể phục vụ model. Dựa vào runtime trade-off trên dashboard, chọn một cho API inference cụ thể và bảo vệ lựa chọn bằng traffic pattern, cold start, concurrency, GPU/custom runtime, networking, on-call và chi phí.
+    Nêu thêm thông tin còn thiếu trước khi chốt architecture.
+
+23. Mở artifact readiness checklist. Vì sao model artifact cần immutable version/generation, digest/checksum, IAM, lineage, retention và quyền truy cập rõ ràng? Nếu artifact thay đổi sau khi đã được promote thì audit và rollback bị ảnh hưởng thế nào?
+    Nối artifact với model registry, serving image và release ledger.
+
+24. Bạn sẽ chứng minh migration đã hoạt động tương đương ra sao trước cutover? Hãy lập thứ tự shadow/dual-run, replay, đối soát output, kiểm tra bảo mật/chi phí, canary và rollback; nêu điều kiện dừng ở từng bước.
+    Mọi throughput/latency sau migration phải được benchmark lại trên target, không kế thừa số Kafka cũ.
+
+PHẦN 5 — CUSTOMER STUDIO: TỪ DISCOVERY ĐẾN HÀNH ĐỘNG
+------------------------------------------------------
+
+25. Trong Customer studio, đổi persona giữa SaaS founder, retail operations lead và support director. Pain, workflow, success signal và hành động sau prediction thay đổi thế nào? Chọn một persona và giải thích vì sao cùng một model/metric không phù hợp cho tất cả.
+    Ví dụ: AUC không thay cho retention lift, service level, waste, handle time hoặc CSAT.
+
+26. Dùng Discovery canvas và Build demo brief. Những nội dung nào là thông tin đã biết, giả định, câu hỏi còn mở và giả thuyết AI? Trước pilot cần xác nhận baseline, data rights, owner, human workflow, capacity và metric nào?
+    Nói rõ cách tránh bán giải pháp trước khi hiểu vấn đề.
+
+27. Ở Architecture decision record, bấm Inspect guardrails. Khi intent confidence thấp, so sánh fallback LLM có guardrail, rule-based, abstain và human handoff. Quyết định nào giảm rủi ro nhưng vẫn hữu ích cho user? Bạn sẽ theo dõi refusal/escalation/safety ra sao?
+    Đừng xem “thêm LLM” là fallback an toàn mặc định.
+
+PHẦN 6 — TEAM & DELIVERY: MODEL PORTFOLIO VÀ OWNERSHIP
+-------------------------------------------------------
+
+28. Ở IGA solution portfolio, chọn NLP chatbot, XGBoost + FAISS recommendation, churn và Isolation Forest anomaly. Với từng sản phẩm, nêu user/workflow, quyết định model, metric cần đo và một failure mode; vì sao không dùng chung một cách đánh giá?
+    Phân biệt model metric, user outcome và production KPI.
+
+29. Trong Delivery board, đổi state/reassign owner và Add delivery risk. Một work item tốt cần owner, trạng thái, next evidence, mitigation và exit criteria nào? Là team lead, bạn dùng board để phát hiện dependency/blocker và review chất lượng ra sao?
+    Khi kể phỏng vấn, phân biệt rõ “tôi quyết định/làm”, “team làm” và phần chỉ là mô phỏng.
+
+PHẦN 7 — NỐI TOÀN BỘ DASHBOARD THÀNH MỘT VÒNG ĐỜI MLE
+-------------------------------------------------------
+
+30. Hãy kể lại một use case duy nhất từ Customer studio qua Data foundation, model/training, registry, Live inference, canary, drift/monitoring, ledger và quyết định của người dùng. Giả sử consumer lag tăng, quality gate fail hoặc canary vượt error threshold: hệ thống và team đi qua những panel/nút nào, theo thứ tự nào, để bảo vệ user và khôi phục dịch vụ?
+    Kết thúc bằng: đâu là việc bạn thực sự làm, đâu là việc team làm, đâu là thiết kế hướng GCP và đâu là simulation trong dashboard. Nêu bằng chứng còn thiếu nếu muốn gọi hệ thống này production-ready.
+
+CHECKLIST HIỂU DASHBOARD A–Z
+============================
+[ ] Tôi giải thích được từng trang điều hành quyết định nào.
+[ ] Tôi đọc được chỉ số, trạng thái, threshold và ledger mà không nhầm simulation với telemetry.
+[ ] Tôi dự đoán được tác động của các tương tác: promote/rollback, canary, pause, duplicate, fail consumer, inject drift, quality gate và cloud mode.
+[ ] Tôi nối được data → feature/model → inference → user action → monitoring → human response.
+[ ] Tôi chỉ ra được rủi ro, bằng chứng cần có và lý do chọn/không chọn mỗi phương án.
+[ ] Tôi có thể trả lời Câu 30 thành một câu chuyện end-to-end trung thực, rõ ownership và trade-off.
+
+BẮT ĐẦU
+-------
+Trả lời Câu 1 ngay trong chat này theo mẫu: “Câu 1: …”. Mình sẽ chấm và dạy đúng phần dashboard bạn chưa hiểu; chưa chuyển câu khi ý chính còn mơ hồ.
