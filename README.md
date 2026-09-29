@@ -4,7 +4,7 @@ An interactive, local-first demo workspace for learning and defending the AI/ML 
 
 ## Open it
 
-Open `index.html` directly in Chrome. No Python server, API, or package install is needed. Google Fonts is optional; system font fallbacks work offline. Live-looking metrics and simulator outcomes are illustrative, not telemetry.
+On Windows, double-click `start.bat`. It starts a local Python server and opens the dashboard at `http://127.0.0.1:8080/ai-platform-interview-lab/index.html`; keep the server window open while using it and press Ctrl+C there to stop. No API or package install is needed if Python 3 is already installed. Google Fonts is optional; system font fallbacks work offline. Live-looking metrics and simulator outcomes are illustrative, not telemetry.
 
 ## Dashboard preview
 
