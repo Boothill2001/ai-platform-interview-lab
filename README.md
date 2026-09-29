@@ -8,9 +8,9 @@ On Windows, double-click `start.bat`. It starts a local Python server and opens 
 
 ## Dashboard preview
 
-![Fieldnote AI Systems Studio platform overview with KPI cards, model registry, canary release gate, and operator guidance](docs/fieldnote-dashboard.png)
+![Fieldnote AI Systems Studio contact sheet with eight labeled dashboard views: overview, releases, live inference, data, cloud, customer discovery, solution portfolio, and team delivery](docs/fieldnote-dashboard-tour.jpg)
 
-Captured from the local interactive demo. Values shown are illustrative simulation state.
+Captured from eight screens of the local interactive demo. Open the image at full size to inspect each screen. Values shown are illustrative simulation state, not production telemetry.
 
 ## Demo areas
 
